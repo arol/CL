@@ -1,0 +1,5 @@
+#!/bin/bash
+antlr -gt example2.g
+dlg -ci parser.dlg scan.c
+g++ -o example2 example2.c scan.c err.c
+rm -f *.o example2.c scan.c err.c parser.dlg tokens.h mode.h

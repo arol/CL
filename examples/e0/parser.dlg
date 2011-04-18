@@ -1,0 +1,64 @@
+<<
+/* parser.dlg -- DLG Description of scanner
+ *
+ * Generated from: example0.g
+ *
+ * Terence Parr, Will Cohen, and Hank Dietz: 1989-2001
+ * Purdue University Electrical Engineering
+ * With AHPCRC, University of Minnesota
+ * ANTLR Version 1.33MR33
+ */
+
+#define ANTLR_VERSION	13333
+#include "pcctscfg.h"
+#include "pccts_stdio.h"
+
+#include "charptr.h"
+#include "antlr.h"
+#include "tokens.h"
+#include "dlgdef.h"
+LOOKAHEAD
+
+void
+#ifdef __USE_PROTOS
+zzerraction(void)
+#else
+zzerraction()
+#endif
+{
+	(*zzerr)("invalid token");
+	zzadvance();
+	zzskip();
+}
+>>
+
+
+%%START
+
+@
+	<<
+		NLA = 1;
+	>>
+
+[0-9]+
+	<<
+		NLA = NUM;
+	>>
+
+\+
+	<<
+		NLA = PLUS;
+	>>
+
+\-
+	<<
+		NLA = SUB;
+	>>
+
+[\ \n]
+	<<
+		NLA = SPACE;
+    zzskip();   
+	>>
+
+%%
