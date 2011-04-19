@@ -46,27 +46,26 @@ AST* createASTnode(Attrib* attr, int ttype, char *textt);
 /// function called by the scanner when a new token is found.
 void zzcr_attr(Attrib *attr,int type,char *text)
 {
-	switch (type) {
-	case IDENT:
-	  attr->kind="ident";
-	  attr->text=text;
-	  break;
-	case INTCONST:
-	   attr->kind="intconst";
-	   attr->text=text;
-	   break;
-	case STRING:
-	   attr->kind="string";
-	   attr->text=text;
-	   break;
-
-	default:
-	  attr->kind=lowercase(text);
-	  attr->text="";
-	  break;
-	}
-	attr->line = zzline;
-	if (type!=INPUTEND) cout<<text;
+  switch (type) {
+  case IDENT:
+    attr->kind="ident";
+    attr->text=text;
+    break;
+  case INTCONST:
+    attr->kind="intconst";
+    attr->text=text;
+    break;
+  case STRING:
+    attr->kind="string";
+    attr->text=text;
+    break;
+  default:
+    attr->kind=lowercase(text);
+    attr->text="";
+    break;
+  }
+  attr->line = zzline;
+  if (type!=INPUTEND) cout<<text;
 
 }
 
@@ -212,55 +211,55 @@ int main(int argc,char *argv[])
 #token VARS         "VARS"
 #token ENDVARS      "ENDVARS"
 #token INT          "INT"
-#token BOOL			"BOOL"
-#token AND			"AND"
-#token OR			"OR"
-#token NOT			"NOT"
-#token LESS			"\<"
-#token MORE			"\>"
-#token EQUAL		"="
+#token BOOL         "BOOL"
+#token AND          "AND"
+#token OR           "OR"
+#token NOT          "NOT"
 #token STRUCT       "STRUCT"
 #token ENDSTRUCT    "ENDSTRUCT"
-#token ARRAY		"ARRAY"
-#token OF			"OF"
 #token WRITELN      "WRITELN"
-#token READ			"READ"
-#token WRITE		"WRITE"
-#token IF			"IF"
-#token THEN			"THEN"
-#token ELSE			"ELSE"
-#token ENDIF		"ENDIF"
-#token WHILE		"WHILE"
-#token ENDWHILE		"ENDWHILE"
-#token DO			"DO"
-#token PROCEDURE	"PROCEDURE"
-#token ENDPROCEDURE	"ENDPROCEDURE"
-#token FUNCTION		"FUNCTION"
-#token ENDFUNCTION	"ENDFUNCTION"
-#token RETURN		"RETURN"
-#token TYPEPARAM	"VAL|REF"
+#token IF           "IF"
+#token THEN         "THEN"
+#token ELSE         "ELSE"
+#token ENDIF        "ENDIF"
+#token WHILE        "WHILE"
+#token DO           "DO"
+#token ENDWHILE     "ENDWHILE"
+#token ARRAY        "ARRAY"
+#token OF           "OF"
+#token PROCEDURE    "PROCEDURE"
+#token ENDPROCEDURE "ENDPROCEDURE"
+#token TYPEPARAM    "REF|VAL"
+#token FUNCTION     "FUNCTION"
+#token ENDFUNCTION  "ENDFUNCTION"
+#token RETURN       "RETURN"
 #token PLUS         "\+"
-#token MINUS		"\-"
-#token TIMES		"\*"
-#token DIV			"\/"
+#token MINUS        "\-"
+#token TIMES        "\*"
+#token DIV	    	"\/"
 #token OPENPAR      "\("
 #token CLOSEPAR     "\)"
-#token OPENCLAU		"\["
-#token CLOSECLAU	"\]"
+#token OPENCLAU     "\["
+#token CLOSECLAU    "\]"
+#token OPENARROW    "\<"
+#token CLOSEARROW   "\>"
 #token ASIG         ":="
+#token EQUAL        "="
 #token DOT          "."
-#token COMMA		","
-#token BOOLCONST	"TRUE|FALSE"
+#token COMMA        ","
+#token READ         "READ"
+#token WRITE        "WRITE"
+#token BOOLCONST    "TRUE|FALSE"
 #token IDENT        "[a-zA-Z][a-zA-Z0-9]*"
 #token INTCONST     "[0-9]+"
+#token STRING       "\"[a-zA-Z0-9\ :\)\(\=]*\""
 #token COMMENT      "//~[\n]*" << printf("%s",zzlextext); zzskip(); >>
 #token WHITESPACE   "[\ \t]+"  << printf("%s",zzlextext); zzskip(); >>
-#token STRING		"\"[a-zA-Z0-9\ :\(\)\=]*\""
 #token NEWLINE      "\n"       << zzline++; printf("\n%3d: ", zzline); zzskip(); >>
 #token LEXICALERROR "~[]"   << printf("Lexical error: symbol '%s' ignored!\n", zzlextext);
                                zzLexErrCount++;
                                zzskip(); >>
-#token INPUTEND   "@"
+#token INPUTEND   	"@"
 
 program: PROGRAM^ dec_vars l_dec_blocs l_instrs ENDPROGRAM! INPUTEND!;
 
@@ -270,49 +269,43 @@ l_dec_vars: (dec_var)* ;
 
 dec_var: IDENT^ constr_type;
 
-l_dec_blocs: ( dec_bloc )* <<#0=createASTlist(_sibling);>> ;
+l_dec_blocs: ( dec_procedure | dec_function )* <<#0=createASTlist(_sibling);>> ;
 
-dec_bloc: (PROCEDURE^ dec_proc_name dec_vars l_dec_blocs l_instrs  ENDPROCEDURE! |
-           FUNCTION^ dec_func_name dec_vars l_dec_blocs l_instrs RETURN! expression ENDFUNCTION!) <</*needs modification*/ >>;
+dec_procedure: PROCEDURE^ dec_proc_header dec_vars l_dec_blocs l_instrs ENDPROCEDURE!;
+dec_proc_header: IDENT^ OPENPAR! l_params_dec CLOSEPAR! ;
 
-dec_proc_name: IDENT^ OPENPAR! l_params CLOSEPAR!  ;
-dec_func_name: IDENT^ OPENPAR! l_params CLOSEPAR! RETURN! constr_type ;
+dec_function: FUNCTION^ dec_func_header dec_vars l_dec_blocs l_instrs RETURN! expression ENDFUNCTION!;
+dec_func_header: IDENT^ OPENPAR! l_params_dec CLOSEPAR! RETURN! constr_type;
 
-l_params: (param (COMMA! param)* | ) <<#0=createASTlist(_sibling);>>;
-param: TYPEPARAM^ IDENT constr_type;
+l_params_dec: (param_dec (COMMA! param_dec)* | ) <<#0=createASTlist(_sibling);>>;
+param_dec: TYPEPARAM^ IDENT constr_type;
+
+constr_type: INT | BOOL | STRUCT^ (field)* ENDSTRUCT! | ARRAY^ OPENCLAU! INTCONST CLOSECLAU! OF! constr_type;
+
+field: IDENT^ constr_type;
 
 l_params_call: (param_call (COMMA! param_call)* | ) <<#0=createASTlist(_sibling);>>;
 param_call: expression;
 
-constr_type: INT 
-				| BOOL 
-				| STRUCT^ (field)* ENDSTRUCT! 
-				| ARRAY^ OPENCLAU! INTCONST CLOSECLAU! OF! constr_type;
-
-field: IDENT^ constr_type;
-
 l_instrs: (instruction)* <<#0=createASTlist(_sibling);>>;
 
 instruction:
-        IDENT ( DOT^ IDENT)* (	(OPENCLAU^ exprsumminus CLOSECLAU! ( DOT^ IDENT )*)* ASIG^ expression 
-								| OPENPAR^ l_params_call CLOSEPAR! )
-		| IF^ expression THEN! l_instrs (ELSE! l_instrs | ) ENDIF!
-		| WHILE^ expression DO! l_instrs ENDWHILE!
-      	| WRITELN^ OPENPAR! ( expression | STRING ) CLOSEPAR!
-		| WRITE^ OPENPAR! (expression | STRING ) CLOSEPAR! 
-		| READ^ OPENPAR! (expression) CLOSEPAR!;
+        IDENT ( ( (DOT^ IDENT)* (OPENCLAU^ exp2 CLOSECLAU! (DOT^ IDENT)*)* ASIG^ expression) | OPENPAR^ l_params_call CLOSEPAR! )
+      | IF^ expression THEN! l_instrs (ELSE! l_instrs )* ENDIF!
+      | WHILE^ expression DO! l_instrs ENDWHILE!
+      | READ^ OPENPAR! ( expsimple | STRING ) CLOSEPAR!
+      | WRITE^ OPENPAR! ( expsimple | STRING ) CLOSEPAR!
+      |	WRITELN^ OPENPAR! ( expression | STRING ) CLOSEPAR!
+;
 
-expression: exprmoreless ( ( AND^ | OR^ ) exprmoreless)*;
-exprmoreless: exprsumminus ( (MORE^ | LESS^ | EQUAL^) exprsumminus )*;
-exprsumminus: exprdivtimes ( ( PLUS^ | MINUS^ ) exprdivtimes)*;
-exprdivtimes: expsimple ( (TIMES^ | DIV^ ) expsimple )*;
+expression: exp3 ( (AND^ | OR^) exp3 )*;
+exp3: exp2 ( (OPENARROW^ | CLOSEARROW^ | EQUAL^) exp2 )*;
+exp2: exp1 ( (PLUS^ | MINUS^) exp1 )*;
+exp1: expsimple ( (TIMES^ | DIV^) expsimple )*;
 
-expsimple:
-        INTCONST
-		| BOOLCONST
-		| IDENT^ (DOT^ IDENT)* ( (	OPENCLAU^ exprsumminus CLOSECLAU! ( DOT^ IDENT )*)* 
-									| OPENPAR^ l_params_call CLOSEPAR! (DOT^ IDENT)* ( OPENCLAU^ exprsumminus CLOSECLAU! ( DOT^ IDENT )*)* )
-		| MINUS^ expsimple
-		| NOT^ expsimple
-	  	| OPENPAR! ( expression ) CLOSEPAR!
-		;
+expsimple: INTCONST
+      | BOOLCONST
+      | IDENT^ ( (DOT^ IDENT)* ( (OPENCLAU^ exp2 CLOSECLAU! (DOT^ IDENT)*)* ) | OPENPAR^ l_params_call CLOSEPAR! (DOT^ IDENT)* ( (OPENCLAU^ exp2 CLOSECLAU! (DOT^ IDENT)*)* ) )
+      | OPENPAR! ( expression ) CLOSEPAR!
+      | MINUS^ expsimple
+      | NOT^ expsimple;
