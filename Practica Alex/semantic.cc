@@ -343,25 +343,26 @@ void TypeCheck(AST *a,string info)
 
       if(info == "instruction"){
         if (symboltable[a->down->text].tp->kind != "procedure"){
-	  errorisnotprocedure(a->line);
-	}
-        if(symboltable[a->down->text].tp->kind == "procedure" || symboltable[a->down->text].tp->kind == "function"){
+	  		errorisnotprocedure(a->line);
+		}
+        
+		if(symboltable[a->down->text].tp->kind == "procedure" || symboltable[a->down->text].tp->kind == "function"){
           check_params(a->down->right->down, symboltable[a->down->text].tp->down, a->line, 0);
           a->ref = 0;
         }
       }
       else{
-	if(a->tp->kind != "function"){
-	  errorisnotfunction(a->line);
-	}
-	check_params(a->down->right->down, symboltable[a->down->text].tp->down, a->line, 0);
-	a->ref=0;
-	if(a->tp->kind == "function"){
-	  a->tp = symboltable[a->down->text].tp->right;
-	}
-	else{
-	  a->tp = create_type("error", 0, 0);
-	}
+		if(a->tp->kind != "function"){
+		  errorisnotfunction(a->line);
+		}
+		check_params(a->down->right->down, symboltable[a->down->text].tp->down, a->line, 0);
+		a->ref=0;
+		if(a->tp->kind == "function"){
+		  a->tp = symboltable[a->down->text].tp->right;
+		}
+		else{
+		  a->tp = create_type("error", 0, 0);
+		}
       }
     }
   }

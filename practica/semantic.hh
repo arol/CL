@@ -15,6 +15,7 @@ bool isbasickind(string kind);
 void check_params(AST *a,ptype tp,int line,int numparam);
 void insert_vars(AST *a);
 void construct_struct(AST *a);
+void construct_array(AST *a);
 void insert_headers(AST *a);
 
 #endif
