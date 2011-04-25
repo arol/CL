@@ -125,11 +125,40 @@ bool isbasickind(string kind) {
 	return kind=="int" || kind=="bool";
 }
 
-
+bool check_num_params(AST *a, ptype tp){
+	for(int i=1; a!=0 && tp!=0; a=a->right, tp=tp->right, i++);
+	if(a!=0 || tp!=0){
+		return false;
+	}else{
+		return true;
+	}
+}
 
 void check_params(AST *a,ptype tp,int line,int numparam)
 {
-	//...
+	//Check for number of params
+	// for(int i=1; a!=0 && tp!=0; a=a->right, tp=tp->right, i++);
+	// 	if(a!=0 && tp!=0){
+	// 		errornumparam(a->line);
+	// 	}
+	// WE HAVE TO MAKE THIS IN OTHER OPERATION FOR NON LOOSE INPUT DATA.
+	if(!check_num_params(a,tp)){
+		errornumparam(line);
+		return;
+	}
+	
+	//Check for all of params
+	for(int i=1; a!=0 && tp!=0; a=a->right, tp=tp->right, i++){
+		TypeCheck(a);
+		// cout << "check param kind: " << tp->kind << " " << a->tp->kind << endl;
+		if(tp->kind == "ref" && a->ref==0){
+			errorreferenceableparam(line, i);
+		}
+		
+		if(a->tp->kind != "error" && !equivalent_types(a->tp, tp->down)){
+			errorincompatibleparam(line, i);
+		}
+	}
 }
 
 void insert_vars(AST *a)
@@ -163,15 +192,37 @@ void construct_array(AST *a){
 	a->tp->numelemsarray = atoi(a->down->text.c_str());
 }
 
+ptype create_param(AST *a){
+	if(!a) return 0;
+	TypeCheck(a->down->right);
+	//cout << "create type: " << a->kind << endl;
+	return create_type(a->kind, a->down->right->tp, create_param(a->right));
+}
+
+void insert_params(AST *a){
+	if(a!=0){
+		TypeCheck(a->down->right);
+		InsertintoST(a->line, a->kind, a->down->text, a->down->right->tp);
+		//cout << "param kind: " << a->kind << " and text: " << a->down->text << endl;
+		insert_params(a->right);
+	}
+}
+
 void create_header(AST *a)
 {
-	//...
+	a->tp = create_type(a->kind, create_param(a->down->down->down),0);
+	if(a->kind=="function"){
+		TypeCheck(a->down->down->right);
+		a->tp->right = a->down->down->right->tp;
+	}
 }
 
 
 void insert_header(AST *a)
 {
-	//...
+	create_header(a);
+	InsertintoST(a->line, a->kind, a->down->text, a->tp);
+	//cout << "inserted into ST:" << a->kind << " " << a->down->text << endl;
 }
 
 void insert_headers(AST *a)
@@ -193,8 +244,8 @@ void TypeCheck(AST *a,string info)
 	if (a->kind=="program") {
 		a->sc=symboltable.push();
 		insert_vars(child(child(a,0),0));
-		//insert_headers(child(child(a,1),0));
-		//TypeCheck(child(a,1));
+		insert_headers(child(child(a,1),0));
+		TypeCheck(child(a,1)); //Functions i procedures
 		TypeCheck(child(a,2),"instruction");
 
 		symboltable.pop();
@@ -211,13 +262,52 @@ void TypeCheck(AST *a,string info)
 		} 
 		else {
 			a->tp=symboltable[a->text].tp;
-			a->ref=1;
+			if(a->tp->kind!="procedure" && a->tp->kind!="function"){
+				a->ref=1;
+			}
 		}
+	}
+	//Functions and procedures
+	else if( a->kind == "procedure" || a->kind == "function" ){
+		//Going down a level
+		a->sc = symboltable.push();
+		
+		TypeCheck(a->down); //proc identifier
+		//params
+		insert_params(a->down->down->down);
+		
+		//vars
+		insert_vars(a->down->right->down);
+		
+		//functions
+		insert_headers(a->down->right->right->down);
+		
+		TypeCheck(a->down->right->right);
+		TypeCheck(a->down->right->right->right, "instruction"); //instr list
+		
+		//cout << "procedure!!!" << endl;
+		
+		//check the function return
+		if(a->kind=="function"){
+			TypeCheck(a->down->right->right->right->right);
+			if(a->down->down->right->tp->kind != "error"){
+				if(a->down->right->right->right->right->kind != "error" &&
+					!equivalent_types(a->down->right->right->right->right->tp, a->down->down->right->tp)){
+						errorincompatiblereturn(a->down->right->right->right->right->line);
+					}
+				
+				a->tp = a->down->down->right->tp;
+			}
+		}
+		
+		//Going up a level
+		symboltable.pop();
 	} 
 	else if (a->kind=="struct") {
 		construct_struct(a);
 	}
 	//Tricky structures
+	//ARRAY
 	else if( a->kind=="array" ){
 		construct_array(a);
 	}
@@ -238,7 +328,40 @@ void TypeCheck(AST *a,string info)
 		if( a->down->tp->kind == "array" ){
 			a->tp = a->down->tp->down;
 		}
+	}
+	else if( a->kind == "("){
+		TypeCheck(a->down); //call identifier
+		if(a->down->tp->kind != "error" ){
+			a->tp = symboltable[a->down->text].tp;
+			//cout << "symboltable down text: " << a->down->text << endl;
+			
+			if(info=="instruction"){
+				if(a->tp->kind != "procedure"){
+					errorisnotprocedure(a->line);
+				}
 				
+				if(a->tp->kind == "procedure"){
+					check_params(a->down->right->down, a->tp->down, a->line, 0);
+					a->ref=0;
+				}
+			}
+			else{
+				if(a->tp->kind != "function"){
+					errorisnotfunction(a->line);
+				}
+				
+				check_params(a->down->right->down, a->tp->down, a->line, 0);
+				a->ref=0;
+				
+				if(a->tp->kind=="function"){
+					a->tp = a->tp->right;
+				}else{
+					a->tp = create_type("error", 0, 0);
+				}
+			}
+		}
+		
+		//TypeCheck(a->down->right); //parameters
 	}
 	else if (a->kind==":=") {
 		TypeCheck(child(a,0));
@@ -312,9 +435,13 @@ void TypeCheck(AST *a,string info)
 			errorbooleanrequired(a->line, a->kind);
 		}
 		//if: 	a->down->right
+		a->sc = symboltable.push();
 		TypeCheck(a->down->right,"instruction");
+		symboltable.pop();
 		//else: a->down->right->right
+		a->sc = symboltable.push();
 		TypeCheck(a->down->right->right,"instruction");
+		symboltable.pop();
 	}
 	else if( a->kind=="while" ){
 		TypeCheck(a->down);
@@ -323,7 +450,9 @@ void TypeCheck(AST *a,string info)
 		}
 		
 		//instr: 	a->down->right
-		TypeCheck(a->down->right);
+		a->sc = symboltable.push();
+		TypeCheck(a->down->right, "instruction");
+		symboltable.pop();
 		
 	}
 	//ARITHMETIC
