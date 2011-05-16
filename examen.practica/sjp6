@@ -1,0 +1,39 @@
+
+
+  1: Program
+  2:   Vars
+  3:     a Array [10] Of Int
+  4:     b Bool
+  5:     i Int
+  6:   EndVars
+  7:     
+  8:   Procedure P(Const Ref x Array [10] Of Int, Const Ref y Int)
+  9:     i := y
+ 10:     a[x[i+1]]:=4
+ 11:   EndProcedure
+ 12:   Function F(Const Ref x Bool) Return Array[10] Of Int
+ 13:     Return a
+ 14:   EndFunction
+ 15: 
+ 16:   P(a, i)
+ 17:   P(a, 3)
+ 18:   P(3, 3)
+ 19:   P(a, b)
+ 20: 
+ 21:   a := F(b)
+ 22:   a := F(True)
+ 23:   P(F(b), i)
+ 24: EndProgram
+ 25: 
+ 26: 
+
+Type Checking:
+
+L. 17: Parameter 2 is expected to be referenceable but it is not.
+L. 18: Parameter 1 is expected to be referenceable but it is not.
+L. 18: Parameter 1 with incompatible types.
+L. 18: Parameter 2 is expected to be referenceable but it is not.
+L. 19: Parameter 2 with incompatible types.
+L. 22: Parameter 1 is expected to be referenceable but it is not.
+L. 23: Parameter 1 is expected to be referenceable but it is not.
+There are errors: no code generated

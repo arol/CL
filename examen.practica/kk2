@@ -1,0 +1,27 @@
+
+
+  1: PROGRAM
+  2:   VARS
+  3:     x Int
+  4:     y Int
+  5:     a Bool
+  6:      Bool
+  7:   ENDVARS
+  8:   b := True
+  9:   x := False
+ 10:   b := 3
+ 11:   b := b And  Or False
+ 12:        
+ 13:      Lexical error: symbol '<' ignored!
+   
+ 14:      Lexical error: symbol '>' ignored!
+ 
+ 15:      Lexical error: symbol '=' ignored!
+ 
+ 16:      Lexical error: symbol '=' ignored!
+ 
+ 17:      Lexical error: symbol '=' ignored!
+ 
+ 18: 
+ 19: 
+There were lexical errors.

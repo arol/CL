@@ -1,0 +1,35 @@
+
+
+  1: Program
+  2:   Vars
+  3:     i Iterator of Int
+  4:     i2 Iterator of Int
+  5:     b Iterator of Bool
+  6:     ii Iterator of Iterator of Int
+  7:     ib Iterator of Iterator of Bool
+  8:     x Int
+  9:   EndVars
+ 10:   If i = i2 Then
+ 11:     While ii < ib Or i > b Do
+ 12:        x := x + ii + 2
+ 13:     EndWhile
+ 14:   Else
+ 15:     If i = b Then
+ 16:       While ii = ib Do
+ 17:          x := 5 = b
+ 18:       EndWhile
+ 19:     EndIf
+ 20:   EndIf
+ 21: EndProgram
+ 22: 
+
+Type Checking:
+
+L. 11: Operator < with incompatible types.
+L. 11: Operator > with incompatible types.
+L. 12: Operator + with incompatible types.
+L. 15: Operator = with incompatible types.
+L. 16: Operator = with incompatible types.
+L. 17: Operator = with incompatible types.
+L. 17: Assignment with incompatible types.
+There are errors: no code generated

@@ -1,0 +1,21 @@
+Program
+  Vars
+    i Iterator of Int
+    i2 Iterator of Int
+    b Iterator of Bool
+    ii Iterator of Iterator of Int
+    ib Iterator of Iterator of Bool
+    x Int
+  EndVars
+  If i = i2 Then
+    While ii < ib Or i > b Do
+       x := x + ii + 2
+    EndWhile
+  Else
+    If i = b Then
+      While ii = ib Do
+         x := 5 = b
+      EndWhile
+    EndIf
+  EndIf
+EndProgram

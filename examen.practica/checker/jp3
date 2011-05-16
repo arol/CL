@@ -1,0 +1,23 @@
+Program
+  Vars
+    i Iterator of Int
+    j Iterator of Bool
+    x Int
+    s Struct
+        i Iterator of Array [5] Of Int
+      EndStruct
+  EndVars
+  i++
+  j  ++
+  i   --   j   --
+  While i = j Do
+    i++
+    x++
+  EndWhile
+  x--
+  i--
+  s--
+  s.i++
+  s.i[4]--
+  s.z++
+EndProgram

@@ -1,0 +1,25 @@
+Program
+  Vars
+    a Array [10] Of Int
+    b Bool
+    i Int
+  EndVars
+    
+  Procedure P(Const Ref x Array [10] Of Int, Const Ref y Int)
+    i := y
+    a[x[i+1]]:=4
+  EndProcedure
+  Function F(Const Ref x Bool) Return Array[10] Of Int
+    Return a
+  EndFunction
+
+  P(a, i)
+  P(a, 3)
+  P(3, 3)
+  P(a, b)
+
+  a := F(b)
+  a := F(True)
+  P(F(b), i)
+EndProgram
+

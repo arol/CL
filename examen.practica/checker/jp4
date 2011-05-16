@@ -1,0 +1,31 @@
+Program
+  Vars
+    iii Iterator of Iterator of Int
+    ii  Iterator of Int
+    i   Int
+    b   Bool
+    ab  Array [5] of Iterator Of Bool
+    sb  Struct 
+          b Iterator Of Bool 
+        EndStruct
+    ia  Iterator Of Array [5] Of Int
+  EndVars
+  i := !iii
+  i := !ii
+  i := !i
+  i := !!iii
+  i := !!ii
+  i := !!i
+  ii := !iii
+  ii := !ii
+  ii := !i
+  iii := !iii
+  iii := !ii
+  iii := !i
+
+  b := !ab[4]
+  b := !sb.b
+  i := !ia[4]
+
+  i := !ii / i
+EndProgram

@@ -1,0 +1,43 @@
+Program
+  Vars
+    a Array [10] Of Int
+  EndVars
+  Procedure PrintAllInt(Val begin Iterator of Int, Val end Iterator of Int)
+    Vars
+      i Iterator of Int
+    EndVars
+    i := begin
+    While Not (i = end) Do
+      WriteLn(!i)
+      i++
+    EndWhile
+  EndProcedure
+  Function TestLast(Ref a Array [10] Of Int) Return Iterator of Bool
+    Return Last(a)
+  EndFunction
+  Function GetArray(Ref a Array [10] Of Int) Return Array [10] Of Int
+    Return a
+  EndFunction
+  Procedure Test()
+    Vars
+      a Array [10] Of Int
+      b Array [10] Of Iterator Of Int
+      c Iterator Of Array [10] Of Int
+      d Iterator Of Iterator Of Int
+      e Iterator Of Array [10] Of Iterator Of Int
+      i Iterator Of Int
+    EndVars
+    i := first(a)
+    c := first(a)
+    c := last(a)
+    b[1] := first(a)
+    b[0] := first(a[0])
+    b[0] := first(b[0])
+    a[0] := !first(a)
+    d := last(b)
+    e := last(b)
+    c := last(d)
+    i := last(GetArray(a))
+  EndProcedure
+  PrintAllInt(First(a), Last(a))
+EndProgram
