@@ -1,0 +1,36 @@
+
+
+  1: Program
+  2:   Vars
+  3:     i Iterator of Int
+  4:     j Iterator of Bool
+  5:     x Int
+  6:     s Struct
+  7:         i Iterator of Array [5] Of Int
+  8:       EndStruct
+  9:   EndVars
+ 10:   i++
+ 11:   j  ++
+ 12:   i   --   j   --
+ 13:   While i = j Do
+ 14:     i++
+ 15:     x++
+ 16:   EndWhile
+ 17:   x--
+ 18:   i--
+ 19:   s--
+ 20:   s.i++
+ 21:   s.i[4]--
+ 22:   s.z++
+ 23: EndProgram
+ 24: 
+
+Type Checking:
+
+L. 13: Operator = with incompatible types.
+L. 15: ++ must be applied to a referenceable iterator.
+L. 17: -- must be applied to a referenceable iterator.
+L. 19: -- must be applied to a referenceable iterator.
+L. 21: Operator array[] with incompatible types.
+L. 22: Field z is not defined in the struct.
+There are errors: no code generated

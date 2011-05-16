@@ -1,0 +1,44 @@
+
+
+  1: Program
+  2:   Vars
+  3:     a Array [10] Of Int
+  4:     b Bool
+  5:     i Int
+  6:   EndVars
+  7: 
+  8:   Procedure P(          )
+  9:     Procedure P2(Ref z Array [10] Of Int)
+ 10:       z[0] := y
+ 11:       P(z, i)
+ 12:     EndProcedure
+ 13:     Procedure P3(Val z Array [10] Of Int)
+ 14:       z[3] := 2
+ 15:       P(z, i)
+ 16:     EndProcedure
+ 17:     x[0] := y
+ 18:     P2(x)
+ 19:     P2(a)
+ 20:     P2(z)
+ 21:     P3(x)
+ 22:     y := 3
+ 23:     i := y
+ 24:   EndProcedure
+ 25:   Function F(   ) Return Array[10] Of Int
+ 26:     x := True
+ 27:     If x Then
+ 28:       x := False
+ 29:     EndIf
+ 30:     Return a
+ 31:   EndFunction
+ 32:   Procedure PP(         )
+ 33:     s.a[3] := 2
+ 34:     b := s.a[3] > 2
+ 35:     P(s.a, i)
+ 36:     P(s.a[3], i)
+ 37:     P(z, i)
+ 38:   EndProcedure
+ 39:   x := True
+ 40: EndProgram
+ 41: 
+There were syntax errors.

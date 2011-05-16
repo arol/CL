@@ -1,0 +1,48 @@
+
+
+  1: Program
+  2:   Vars
+  3:     iii Iterator of Iterator of Int
+  4:     ii  Iterator of Int
+  5:     i   Int
+  6:     b   Bool
+  7:     ab  Array [5] of Iterator Of Bool
+  8:     sb  Struct 
+  9:           b Iterator Of Bool 
+ 10:         EndStruct
+ 11:     ia  Iterator Of Array [5] Of Int
+ 12:   EndVars
+ 13:   i := !iii
+ 14:   i := !ii
+ 15:   i := !i
+ 16:   i := !!iii
+ 17:   i := !!ii
+ 18:   i := !!i
+ 19:   ii := !iii
+ 20:   ii := !ii
+ 21:   ii := !i
+ 22:   iii := !iii
+ 23:   iii := !ii
+ 24:   iii := !i
+ 25: 
+ 26:   b := !ab[4]
+ 27:   b := !sb.b
+ 28:   i := !ia[4]
+ 29: 
+ 30:   i := !ii / i
+ 31: EndProgram
+ 32: 
+
+Type Checking:
+
+L. 13: Assignment with incompatible types.
+L. 15: ! must be applied to an iterator.
+L. 17: ! must be applied to an iterator.
+L. 18: ! must be applied to an iterator.
+L. 20: Assignment with incompatible types.
+L. 21: ! must be applied to an iterator.
+L. 22: Assignment with incompatible types.
+L. 23: Assignment with incompatible types.
+L. 24: ! must be applied to an iterator.
+L. 28: Operator array[] with incompatible types.
+There are errors: no code generated

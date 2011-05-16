@@ -1,0 +1,40 @@
+Program
+  Vars
+    a Array [10] Of Int
+    b Bool
+    i Int
+  EndVars
+
+  Procedure P(Const Ref x Array [10] Of Int, Const Ref y Int)
+    Procedure P2(Ref z Array [10] Of Int)
+      z[0] := y
+      P(z, i)
+    EndProcedure
+    Procedure P3(Val z Array [10] Of Int)
+      z[3] := 2
+      P(z, i)
+    EndProcedure
+    x[0] := y
+    P2(x)
+    P2(a)
+    P2(z)
+    P3(x)
+    y := 3
+    i := y
+  EndProcedure
+  Function F(Const Ref x Bool) Return Array[10] Of Int
+    x := True
+    If x Then
+      x := False
+    EndIf
+    Return a
+  EndFunction
+  Procedure PP(Const Ref s Struct a Array [10] Of Int EndStruct)
+    s.a[3] := 2
+    b := s.a[3] > 2
+    P(s.a, i)
+    P(s.a[3], i)
+    P(z, i)
+  EndProcedure
+  x := True
+EndProgram

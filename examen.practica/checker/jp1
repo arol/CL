@@ -1,0 +1,34 @@
+Program
+  Vars
+    i Iterator of Int
+    i2 Iterator of Int
+    b Iterator of Bool
+    ii Iterator of Iterator of Int
+    ib Iterator of Iterator of Bool
+    iai Iterator of Array [5] Of Int
+    ai Array [5] Of Iterator of Int
+    sib Struct
+         i Iterator Of Int
+         b Iterator Of Bool
+         is Iterator Of Struct
+                         a Int
+                        EndStruct
+        EndStruct
+    is Iterator Of Struct
+                    a Int
+                   EndStruct
+  EndVars
+  Function Get(Val i Iterator of Int) Return Iterator of Int
+    Return i
+  EndFunction
+  i := i2
+  i := b
+  ii := ib
+  iai := ai
+  ai[1] := i
+  sib.i := Get(i)
+  sib.b := Get(b)
+  sib.i := Get(is)
+  sib.b := b
+  is := sib.is
+EndProgram

@@ -1,0 +1,47 @@
+
+
+  1: Program
+  2:   Vars
+  3:     i Iterator of Int
+  4:     i2 Iterator of Int
+  5:     b Iterator of Bool
+  6:     ii Iterator of Iterator of Int
+  7:     ib Iterator of Iterator of Bool
+  8:     iai Iterator of Array [5] Of Int
+  9:     ai Array [5] Of Iterator of Int
+ 10:     sib Struct
+ 11:          i Iterator Of Int
+ 12:          b Iterator Of Bool
+ 13:          is Iterator Of Struct
+ 14:                          a Int
+ 15:                         EndStruct
+ 16:         EndStruct
+ 17:     is Iterator Of Struct
+ 18:                     a Int
+ 19:                    EndStruct
+ 20:   EndVars
+ 21:   Function Get(Val i Iterator of Int) Return Iterator of Int
+ 22:     Return i
+ 23:   EndFunction
+ 24:   i := i2
+ 25:   i := b
+ 26:   ii := ib
+ 27:   iai := ai
+ 28:   ai[1] := i
+ 29:   sib.i := Get(i)
+ 30:   sib.b := Get(b)
+ 31:   sib.i := Get(is)
+ 32:   sib.b := b
+ 33:   is := sib.is
+ 34: EndProgram
+ 35: 
+
+Type Checking:
+
+L. 25: Assignment with incompatible types.
+L. 26: Assignment with incompatible types.
+L. 27: Assignment with incompatible types.
+L. 30: Parameter 1 with incompatible types.
+L. 30: Assignment with incompatible types.
+L. 31: Parameter 1 with incompatible types.
+There are errors: no code generated

@@ -1,0 +1,58 @@
+
+
+  1: Program
+  2:   Vars
+  3:     a Array [10] Of Int
+  4:   EndVars
+  5:   Procedure PrintAllInt(Val begin Iterator of Int, Val end Iterator of Int)
+  6:     Vars
+  7:       i Iterator of Int
+  8:     EndVars
+  9:     i := begin
+ 10:     While Not (i = end) Do
+ 11:       WriteLn(!i)
+ 12:       i++
+ 13:     EndWhile
+ 14:   EndProcedure
+ 15:   Function TestLast(Ref a Array [10] Of Int) Return Iterator of Bool
+ 16:     Return Last(a)
+ 17:   EndFunction
+ 18:   Function GetArray(Ref a Array [10] Of Int) Return Array [10] Of Int
+ 19:     Return a
+ 20:   EndFunction
+ 21:   Procedure Test()
+ 22:     Vars
+ 23:       a Array [10] Of Int
+ 24:       b Array [10] Of Iterator Of Int
+ 25:       c Iterator Of Array [10] Of Int
+ 26:       d Iterator Of Iterator Of Int
+ 27:       e Iterator Of Array [10] Of Iterator Of Int
+ 28:       i Iterator Of Int
+ 29:     EndVars
+ 30:     i := first(a)
+ 31:     c := first(a)
+ 32:     c := last(a)
+ 33:     b[1] := first(a)
+ 34:     b[0] := first(a[0])
+ 35:     b[0] := first(b[0])
+ 36:     a[0] := !first(a)
+ 37:     d := last(b)
+ 38:     e := last(b)
+ 39:     c := last(d)
+ 40:     i := last(GetArray(a))
+ 41:   EndProcedure
+ 42:   PrintAllInt(First(a), Last(a))
+ 43: EndProgram
+ 44: 
+
+Type Checking:
+
+L. 16: Return with incompatible type.
+L. 31: Assignment with incompatible types.
+L. 32: Assignment with incompatible types.
+L. 34: Referenceable array required in call to first().
+L. 35: Referenceable array required in call to first().
+L. 38: Assignment with incompatible types.
+L. 39: Referenceable array required in call to last().
+L. 40: Referenceable array required in call to last().
+There are errors: no code generated
