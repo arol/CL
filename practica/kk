@@ -1,44 +1,54 @@
 
 
-  1: Program
-  2:   Vars
+  1: PROGRAM
+  2:   VARS
   3:     X Int
   4:     Y Bool
-  5:     B Bool
-  6:   EndVars
-  7:   Function P(Val Z Int,Ref T Bool) Return Int
-  8:     Return Z+T
-  9:   EndFunction
- 10:   Function R(Val N Int) Return Array[5] of Int
- 11:     VARS
- 12: 	X Int
- 13: 	P Array[4] of Int
- 14:     ENDVARS
- 15:     While x<5 Do
- 16: 	P[x]:=N
- 17:     EndWhile
- 18:     Return P
- 19:   EndFunction
- 20:   Procedure Q(Val X Int,Ref W Int)
- 21:     Vars
- 22:       C Array[5] of Int
- 23:       D Array[3] of Int
- 24:       E Struct 
- 25: 	    A Array[3] of Bool
- 26: 	    B Int
- 27: 	  EndStruct
- 28:     EndVars
- 29:     X:=Q(X,X)+
- 30:        Q(X)
- 31:     Y:=P(Y,Y)+Y
- 32:     B:=P(Q(X,Y),P(X,X))
- 33:     C:=R(3)
- 34:     D:=R(3)
- 35:     E.A:=R(3)
- 36:     E.B:=E.A[3]+P(3,False)
- 37:   EndProcedure
- 38: EndProgram
- 39: 
+  5:     Z Struct x int y bool EndStruct
+  6:   ENDVARS
+  7:     Function p(Val X Int) Return Array [10] Of Int
+  8:         Return r
+  9:     EndFunction
+ 10:     Function r() Return Int
+ 11:         Return true
+ 12:     EndFunction
+ 13:     Function s() Return Struct x int y bool EndStruct
+ 14:         Return 3
+ 15:     EndFunction 
+ 16:     Function t() Return Bool
+ 17:         Return s
+ 18:     EndFunction
+ 19:     Function t() Return Bool
+ 20:         Return t
+ 21:     EndFunction
+ 22: 
+ 23:     read(X)
+ 24:     read(Y)
+ 25:     read(p)
+ 26:     read(r)
+ 27:     read(s)
+ 28:     read(Z)
+ 29: 
+ 30:     write(r())
+ 31:     writeln(s())
+ 32:     writeln(Z)
+ 33:     IF X THEN
+ 34:         WHILE Z DO
+ 35: 	   X:=5
+ 36: 	ENDWHILE
+ 37:     ENDIF
+ 38:     IF s() THEN
+ 39:         WHILE X=Y DO
+ 40: 	   Y:=true
+ 41: 	ENDWHILE
+ 42:     ENDIF
+ 43:     IF Z.x=Z THEN
+ 44:         WHILE p() DO
+ 45: 	   Y:=true
+ 46: 	ENDWHILE
+ 47:     ENDIF
+ 48: ENDPROGRAM
+ 49: 
 
 
 program
@@ -47,176 +57,146 @@ program
     |      |        \__int
     |      \__ident(Y)
     |      |        \__bool
-    |      \__ident(B)
-    |               \__bool
+    |      \__ident(Z)
+    |               \__struct
+    |                        \__ident(x)
+    |                        |        \__int
+    |                        \__ident(y)
+    |                                 \__bool
     \__list
     |      \__function
-    |      |          \__ident(P)
+    |      |          \__ident(p)
     |      |          |        \__list
     |      |          |        |      \__val
-    |      |          |        |      |     \__ident(Z)
-    |      |          |        |      |     \__int
-    |      |          |        |      \__ref
-    |      |          |        |            \__ident(T)
-    |      |          |        |            \__bool
+    |      |          |        |            \__ident(X)
+    |      |          |        |            \__int
+    |      |          |        \__array
+    |      |          |                \__intconst(10)
+    |      |          |                \__int
+    |      |          \__list
+    |      |          \__list
+    |      |          \__list
+    |      |          \__ident(r)
+    |      \__function
+    |      |          \__ident(r)
+    |      |          |        \__list
     |      |          |        \__int
     |      |          \__list
     |      |          \__list
     |      |          \__list
-    |      |          \__+
-    |      |              \__ident(Z)
-    |      |              \__ident(T)
+    |      |          \__true
     |      \__function
-    |      |          \__ident(R)
+    |      |          \__ident(s)
     |      |          |        \__list
-    |      |          |        |      \__val
-    |      |          |        |            \__ident(N)
-    |      |          |        |            \__int
-    |      |          |        \__array
-    |      |          |                \__intconst(5)
-    |      |          |                \__int
-    |      |          \__list
-    |      |          |      \__ident(X)
-    |      |          |      |        \__int
-    |      |          |      \__ident(P)
-    |      |          |               \__array
-    |      |          |                       \__intconst(4)
-    |      |          |                       \__int
+    |      |          |        \__struct
+    |      |          |                 \__ident(x)
+    |      |          |                 |        \__int
+    |      |          |                 \__ident(y)
+    |      |          |                          \__bool
     |      |          \__list
     |      |          \__list
-    |      |          |      \__while
-    |      |          |              \__<
-    |      |          |              |   \__ident(x)
-    |      |          |              |   \__intconst(5)
-    |      |          |              \__list
-    |      |          |                     \__:=
-    |      |          |                          \__[
-    |      |          |                          |   \__ident(P)
-    |      |          |                          |   \__ident(x)
-    |      |          |                          \__ident(N)
-    |      |          \__ident(P)
-    |      \__procedure
-    |                  \__ident(Q)
-    |                  |        \__list
-    |                  |               \__val
-    |                  |               |     \__ident(X)
-    |                  |               |     \__int
-    |                  |               \__ref
-    |                  |                     \__ident(W)
-    |                  |                     \__int
-    |                  \__list
-    |                  |      \__ident(C)
-    |                  |      |        \__array
-    |                  |      |                \__intconst(5)
-    |                  |      |                \__int
-    |                  |      \__ident(D)
-    |                  |      |        \__array
-    |                  |      |                \__intconst(3)
-    |                  |      |                \__int
-    |                  |      \__ident(E)
-    |                  |               \__struct
-    |                  |                        \__ident(A)
-    |                  |                        |        \__array
-    |                  |                        |                \__intconst(3)
-    |                  |                        |                \__bool
-    |                  |                        \__ident(B)
-    |                  |                                 \__int
-    |                  \__list
-    |                  \__list
-    |                         \__:=
-    |                         |    \__ident(X)
-    |                         |    \__+
-    |                         |        \__(
-    |                         |        |   \__ident(Q)
-    |                         |        |   \__list
-    |                         |        |          \__ident(X)
-    |                         |        |          \__ident(X)
-    |                         |        \__(
-    |                         |            \__ident(Q)
-    |                         |            \__list
-    |                         |                   \__ident(X)
-    |                         \__:=
-    |                         |    \__ident(Y)
-    |                         |    \__+
-    |                         |        \__(
-    |                         |        |   \__ident(P)
-    |                         |        |   \__list
-    |                         |        |          \__ident(Y)
-    |                         |        |          \__ident(Y)
-    |                         |        \__ident(Y)
-    |                         \__:=
-    |                         |    \__ident(B)
-    |                         |    \__(
-    |                         |        \__ident(P)
-    |                         |        \__list
-    |                         |               \__(
-    |                         |               |   \__ident(Q)
-    |                         |               |   \__list
-    |                         |               |          \__ident(X)
-    |                         |               |          \__ident(Y)
-    |                         |               \__(
-    |                         |                   \__ident(P)
-    |                         |                   \__list
-    |                         |                          \__ident(X)
-    |                         |                          \__ident(X)
-    |                         \__:=
-    |                         |    \__ident(C)
-    |                         |    \__(
-    |                         |        \__ident(R)
-    |                         |        \__list
-    |                         |               \__intconst(3)
-    |                         \__:=
-    |                         |    \__ident(D)
-    |                         |    \__(
-    |                         |        \__ident(R)
-    |                         |        \__list
-    |                         |               \__intconst(3)
-    |                         \__:=
-    |                         |    \__.
-    |                         |    |   \__ident(E)
-    |                         |    |   \__ident(A)
-    |                         |    \__(
-    |                         |        \__ident(R)
-    |                         |        \__list
-    |                         |               \__intconst(3)
-    |                         \__:=
-    |                              \__.
-    |                              |   \__ident(E)
-    |                              |   \__ident(B)
-    |                              \__+
-    |                                  \__[
-    |                                  |   \__.
-    |                                  |   |   \__ident(E)
-    |                                  |   |   \__ident(A)
-    |                                  |   \__intconst(3)
-    |                                  \__(
-    |                                      \__ident(P)
-    |                                      \__list
-    |                                             \__intconst(3)
-    |                                             \__false
+    |      |          \__list
+    |      |          \__intconst(3)
+    |      \__function
+    |      |          \__ident(t)
+    |      |          |        \__list
+    |      |          |        \__bool
+    |      |          \__list
+    |      |          \__list
+    |      |          \__list
+    |      |          \__ident(s)
+    |      \__function
+    |                 \__ident(t)
+    |                 |        \__list
+    |                 |        \__bool
+    |                 \__list
+    |                 \__list
+    |                 \__list
+    |                 \__ident(t)
     \__list
+           \__read
+           |      \__ident(X)
+           \__read
+           |      \__ident(Y)
+           \__read
+           |      \__ident(p)
+           \__read
+           |      \__ident(r)
+           \__read
+           |      \__ident(s)
+           \__read
+           |      \__ident(Z)
+           \__write
+           |       \__(
+           |           \__ident(r)
+           |           \__list
+           \__writeln
+           |         \__(
+           |             \__ident(s)
+           |             \__list
+           \__writeln
+           |         \__ident(Z)
+           \__if
+           |    \__ident(X)
+           |    \__list
+           |           \__while
+           |                   \__ident(Z)
+           |                   \__list
+           |                          \__:=
+           |                               \__ident(X)
+           |                               \__intconst(5)
+           \__if
+           |    \__(
+           |    |   \__ident(s)
+           |    |   \__list
+           |    \__list
+           |           \__while
+           |                   \__=
+           |                   |   \__ident(X)
+           |                   |   \__ident(Y)
+           |                   \__list
+           |                          \__:=
+           |                               \__ident(Y)
+           |                               \__true
+           \__if
+                \__=
+                |   \__.
+                |   |   \__ident(Z)
+                |   |   \__ident(x)
+                |   \__ident(Z)
+                \__list
+                       \__while
+                               \__(
+                               |   \__ident(p)
+                               |   \__list
+                               \__list
+                                      \__:=
+                                           \__ident(Y)
+                                           \__true
 
 
 Type Checking:
 
-L. 8: Operator + with incompatible types.
-L. 15: Identifier x is undeclared.
-L. 16: Identifier x is undeclared.
-L. 18: Return with incompatible type.
-L. 29: Operator ( must be applied to a function in an expression.
-L. 30: Operator ( must be applied to a function in an expression.
-L. 30: The number of parameters in the call do not match.
-L. 31: Parameter 1 with incompatible types.
-L. 31: Operator + with incompatible types.
-L. 31: Assignment with incompatible types.
-L. 32: Operator ( must be applied to a function in an expression.
-L. 32: Parameter 2 with incompatible types.
-L. 32: Parameter 2 with incompatible types.
-L. 32: Parameter 2 is expected to be referenceable but it is not.
-L. 32: Parameter 2 with incompatible types.
-L. 32: Assignment with incompatible types.
-L. 34: Assignment with incompatible types.
-L. 35: Assignment with incompatible types.
-L. 36: Parameter 2 is expected to be referenceable but it is not.
-L. 36: Operator + with incompatible types.
+L. 19: Identifier t already declared.
+L. 8: Return with incompatible type.
+L. 11: Return with incompatible type.
+L. 14: Return with incompatible type.
+L. 17: Return with incompatible type.
+L. 20: Return with incompatible type.
+BIG PROBLEM! No case defined for kind read
+BIG PROBLEM! No case defined for kind read
+BIG PROBLEM! No case defined for kind read
+BIG PROBLEM! No case defined for kind read
+BIG PROBLEM! No case defined for kind read
+BIG PROBLEM! No case defined for kind read
+BIG PROBLEM! No case defined for kind write
+L. 31: Basic type required in writeln.
+L. 32: Basic type required in writeln.
+L. 33: Instruction if requires a boolean condition.
+L. 34: Instruction while requires a boolean condition.
+L. 38: Instruction if requires a boolean condition.
+L. 39: Operator = with incompatible types.
+L. 43: Operator = with incompatible types.
+L. 44: The number of parameters in the call do not match.
+L. 44: Instruction while requires a boolean condition.
 There are errors: no code generated
