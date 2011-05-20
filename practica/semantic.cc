@@ -122,7 +122,7 @@ static void InsertintoST(int line,string kind,string id,ptype tp)
 /// ------------------------------------------------------------
 
 bool isbasickind(string kind) {
-	return kind=="int" || kind=="bool";
+	return kind=="int" || kind=="bool" || kind=="string";
 }
 
 bool check_num_params(AST *a, ptype tp){
@@ -399,6 +399,9 @@ void TypeCheck(AST *a,string info)
 		if (child(a,0)->tp->kind!="error" && !isbasickind(child(a,0)->tp->kind)) {
 			errorreadwriterequirebasic(a->line,a->kind);
 		}
+	}
+	else if( a->kind=="string"){
+		a->tp=create_type("string",0,0);
 	}
 	else if (a->kind==".") {
 		TypeCheck(child(a,0));
