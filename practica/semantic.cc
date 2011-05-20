@@ -126,6 +126,7 @@ bool isbasickind(string kind) {
 }
 
 bool check_num_params(AST *a, ptype tp){
+	//cout << "check params!" << endl;
 	for(int i=1; a!=0 && tp!=0; a=a->right, tp=tp->right, i++);
 	if(a!=0 || tp!=0){
 		return false;
@@ -340,7 +341,7 @@ void TypeCheck(AST *a,string info)
 					errorisnotprocedure(a->line);
 				}
 				
-				if(a->tp->kind == "procedure"){
+				if(a->tp->kind == "procedure" || a->tp->kind == "function"){
 					check_params(a->down->right->down, a->tp->down, a->line, 0);
 					a->ref=0;
 				}
@@ -518,6 +519,24 @@ void TypeCheck(AST *a,string info)
 				errorincompatibleoperator(a->line, a->kind);
 		}
 		a->tp = create_type("bool",0,0);
+	}
+	
+	else if (a->kind=="read"){
+		TypeCheck(a->down);
+		if(a->down->tp->kind != "error" && a->down->ref == 0){
+			errornonreferenceableexpression(a->line,a->kind);
+			return;
+		}
+	
+		if(a->down->tp->kind != "error" && !isbasickind(a->down->tp->kind)){
+			errorreadwriterequirebasic(a->line, a->kind);
+		}
+	}
+	else if (a->kind=="write"){
+		TypeCheck(a->down);
+		if(a->down->tp->kind != "error" && !isbasickind(a->down->tp->kind)){
+			errorreadwriterequirebasic(a->line, a->kind);
+		}
 	}
 	else {
 		cout<<"BIG PROBLEM! No case defined for kind "<<a->kind<<endl;
