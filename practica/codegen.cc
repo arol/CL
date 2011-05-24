@@ -145,10 +145,16 @@ codechain GenLeft(AST *a,int t)
 	if (a->kind=="ident") {
 
 		int jumpedScopes = symboltable.jumped_scopes(a->text);
-		// cout << "jumped scopes of: "<< a->text << " " << symboltable.jumped_scopes(a->text) << endl; 
+		//cout << "jumped scopes of: "<< a->text << " " << symboltable.jumped_scopes(a->text) << endl; 
 		if(jumpedScopes){
 			c=indirections(jumpedScopes, t) ||
 				"addi t"+itostring(t)+" offset("+symboltable.idtable(a->text)+":_"+a->text+") t"+itostring(t);
+			
+			if(symboltable[a->text].kind == "idparref"){
+				if(isbasickind(symboltable[a->text].tp->kind)){
+					c = c || "load t"+itostring(t)+" t"+itostring(t);
+				}
+			}
 		}else{
 			if(symboltable[a->text].kind=="idparref"){
 				c="load _"+a->text+" t"+itostring(t);
@@ -175,6 +181,39 @@ codechain GenLeft(AST *a,int t)
 		c= GenLeft(child(a,0),t) ||
 			"addi t"+itostring(t)+" "+itostring(child(a,0)->tp->offset[child(a,1)->text])+" t"+itostring(t);
 	}
+	else if (a->kind=="("){
+		codechain removeparams;
+		codechain end;
+		
+		if(!isbasickind(a->tp->kind)){
+			c = c ||
+				"aload aux_space t"+ itostring(t) ||
+				"addi  t" + itostring(t) + " " + itostring(offsetauxspace) + " t" + itostring(t) ||
+				"pushparam t" + itostring(t);
+				
+			removeparams = "killparam";
+			end = "";
+			
+			offsetauxspace = offsetauxspace + compute_size(a->tp);
+			t++;
+		}else{
+			c = c ||
+				"pushparam 0";
+			
+			end = "popparam t"+itostring(t);
+		}
+		CodeGenRealParams(a->down->right->down, symboltable[a->down->text].tp->down, c, removeparams, t);
+		
+		c = c ||
+			indirections(symboltable.jumped_scopes(a->down->text),t) ||
+			"pushparam t"+itostring(t) ||
+			"call "+ symboltable.idtable(a->down->text)+"_"+a->down->text ||
+			removeparams ||
+			"killparam" ||
+			end;
+			
+		if(offsetauxspace > maxoffsetauxspace) maxoffsetauxspace = offsetauxspace;
+	}
 	else {
 		cout<<"BIG PROBLEM! No case defined for kind "<<a->kind<<endl;
 	}
@@ -200,10 +239,16 @@ codechain GenRight(AST *a,int t)
 	c="load _"+a->text+" t"+itostring(t);
 		}
 		else if (isbasickind(a->tp->kind)) {
-			//cout<<"is basic kind "+a->kind<<endl;
+			// cout<<"is basic kind "+a->kind+" "+a->text<<endl;
 			c=GenLeft(a,t)||"load t"+itostring(t)+" t"+itostring(t);
 		}
 		else {//...to be done
+			c = c ||
+				GenLeft(a, t+1) ||
+				"aload aux_space t"+itostring(t) ||
+				"addi t"+itostring(t) + " "+ itostring(offsetauxspace) +" t"+ itostring(t) ||
+				"copy t"+itostring(t+1) +" t"+itostring(t) +" "+ itostring(compute_size(a->tp));
+				offsetauxspace = offsetauxspace + compute_size(a->tp);
 		}		
 	} 
 	else if (a->kind=="intconst") {
