@@ -152,7 +152,7 @@ void check_params(AST *a,ptype tp,int line,int numparam)
 	for(int i=1; a!=0 && tp!=0; a=a->right, tp=tp->right, i++){
 		TypeCheck(a);
 		// cout << "check param kind: " << tp->kind << " " << a->tp->kind << endl;
-		if(tp->kind == "ref" && a->ref==0){
+		if(tp->kind == "parref" && a->ref==0){
 			errorreferenceableparam(line, i);
 		}
 		
@@ -197,13 +197,13 @@ ptype create_param(AST *a){
 	if(!a) return 0;
 	TypeCheck(a->down->right);
 	//cout << "create type: " << a->kind << endl;
-	return create_type(a->kind, a->down->right->tp, create_param(a->right));
+	return create_type("par"+a->kind, a->down->right->tp, create_param(a->right));
 }
 
 void insert_params(AST *a){
 	if(a!=0){
 		TypeCheck(a->down->right);
-		InsertintoST(a->line, a->kind, a->down->text, a->down->right->tp);
+		InsertintoST(a->line, "idpar"+a->kind, a->down->text, a->down->right->tp);
 		//cout << "param kind: " << a->kind << " and text: " << a->down->text << endl;
 		insert_params(a->right);
 	}
@@ -222,7 +222,12 @@ void create_header(AST *a)
 void insert_header(AST *a)
 {
 	create_header(a);
-	InsertintoST(a->line, a->kind, a->down->text, a->tp);
+	if(a->kind == "function"){
+		InsertintoST(a->line, "idfunc", a->down->text, a->tp);
+	}else{
+		InsertintoST(a->line, "idproc", a->down->text, a->tp);
+	}
+	
 	//cout << "inserted into ST:" << a->kind << " " << a->down->text << endl;
 }
 
