@@ -1,4 +1,5 @@
 /* ===== Cl.g: parser para el lenguaje fuente CL de Compiladors ===== */
+/* BCN APPS JAM  */
 #header
 <<
 #include <string>
